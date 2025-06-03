@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/crudDb
+    username: postgres
+    password: 1
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update    # Kodda yapılan değişikliklere göre tabloyu günceller (create-drop, validate, none gibi alternatifler de var)
+    show-sql: true        # SQL sorgularını konsolda görürsün
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  sql:
+    init:
+      mode: always        # uygulama başında sql dosyalarını çalıştırır (opsiyonel)
