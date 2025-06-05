@@ -2,7 +2,7 @@ package com.example.crudapp.controller;
 
 import com.example.crudapp.model.StudentCreateRequest;
 import com.example.crudapp.model.StudentCreateResponse;
-import com.example.crudapp.model.StudentResponseDto;
+import com.example.crudapp.model.StudentResponse;
 import com.example.crudapp.model.StudentUpdateRequest;
 import com.example.crudapp.service.ServiceResult;
 import com.example.crudapp.service.ServiceResultVoid;
@@ -35,13 +35,13 @@ public class StudentController {
 
     @GetMapping
     public ResponseEntity<?> getAll() {
-        ServiceResult<List<StudentResponseDto>> result = studentService.getAll();
+        ServiceResult<List<StudentResponse>> result = studentService.getAll();
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable int id) {
-        ServiceResult<StudentResponseDto> result = studentService.getById(id);
+        ServiceResult<StudentResponse> result = studentService.getById(id);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 

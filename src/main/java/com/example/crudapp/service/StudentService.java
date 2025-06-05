@@ -3,7 +3,7 @@ package com.example.crudapp.service;
 import com.example.crudapp.entity.Student;
 import com.example.crudapp.model.StudentCreateRequest;
 import com.example.crudapp.model.StudentCreateResponse;
-import com.example.crudapp.model.StudentResponseDto;
+import com.example.crudapp.model.StudentResponse;
 import com.example.crudapp.model.StudentUpdateRequest;
 import com.example.crudapp.repository.StudentRepository;
 import org.springframework.http.HttpStatus;
@@ -40,14 +40,14 @@ public class StudentService {
         return ServiceResultVoid.success();
     }
 
-    public ServiceResult<List<StudentResponseDto>> getAll() {
+    public ServiceResult<List<StudentResponse>> getAll() {
         List<Student> students = studentRepository.findAll();
         if(students.isEmpty()){
             return ServiceResult.fail("There is no student", HttpStatus.NOT_FOUND);
         }
 
-        List<StudentResponseDto> dtos = students.stream()
-                .map(student -> new StudentResponseDto(
+        List<StudentResponse> dtos = students.stream()
+                .map(student -> new StudentResponse(
                         student.getId(),
                         student.getFullName(),
                         student.getPhone()
@@ -56,14 +56,14 @@ public class StudentService {
         return ServiceResult.success(dtos);
     }
 
-    public ServiceResult<StudentResponseDto> getById(int id) {
+    public ServiceResult<StudentResponse> getById(int id) {
         Optional<Student> optionalStudent = studentRepository.findById(id);
         if(optionalStudent.isEmpty()){
             return ServiceResult.fail("Student not found.", HttpStatus.NOT_FOUND);
         }
 
         Student student = optionalStudent.get();
-        StudentResponseDto dto = new StudentResponseDto(
+        StudentResponse dto = new StudentResponse(
                 student.getId(),
                 student.getFullName(),
                 student.getPhone()
