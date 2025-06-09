@@ -1,37 +1,14 @@
 package com.example.crudapp.repository;
 
 import com.example.crudapp.entity.Student;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
-@Repository
-public class StudentRepository {
+public interface StudentRepository extends JpaRepository<Student, Integer> {
+    // JpaRepository, CRUD işlemleri için gerekli temel metodları sağlar
+    // Ek olarak Student'a özel metodlar buraya eklenebilir
 
-    private final SpringDataStudentRepository springRepository;
+    List<Student> findByFullName(String fullName);
 
-    public StudentRepository(SpringDataStudentRepository springRepository) {
-        this.springRepository = springRepository;
-    }
-
-    public Student save(Student student) {
-        return springRepository.save(student);
-    }
-
-    public Optional<Student> findById(int id) {
-        return springRepository.findById(id);
-    }
-
-    public List<Student> findAll() {
-        return springRepository.findAll();
-    }
-
-    public void deleteById(int id) {
-        springRepository.deleteById(id);
-    }
-
-    public boolean existsById(int id) {
-        return springRepository.existsById(id);
-    }
 }

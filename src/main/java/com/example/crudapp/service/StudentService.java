@@ -72,6 +72,21 @@ public class StudentService {
         return ServiceResult.success(dto);
     }
 
+    public ServiceResult<List<StudentResponse>> getByFullName(String fullName) {
+        List<Student> students = studentRepository.findByFullName(fullName);
+        if(students.isEmpty()){
+            return ServiceResult.fail("Student not found.", HttpStatus.NOT_FOUND);
+        }
+
+        List<StudentResponse> dtos = students.stream().map(student -> new StudentResponse(
+                student.getId(),
+                student.getFullName(),
+                student.getPhone()
+        )).toList();
+
+        return ServiceResult.success(dtos);
+    }
+
     public ServiceResultVoid delete(int id) {
         Optional<Student> optionalStudent = studentRepository.findById(id);
         if(optionalStudent.isEmpty()){

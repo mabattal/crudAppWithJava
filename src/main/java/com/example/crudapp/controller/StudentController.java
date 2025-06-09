@@ -45,6 +45,12 @@ public class StudentController {
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
+    @GetMapping("/search/{fullName}")
+    public ResponseEntity<?> searchByFullName(@PathVariable String fullName) {
+        ServiceResult<List<StudentResponse>> result = studentService.getByFullName(fullName);
+        return ResponseEntity.status(result.getStatus()).body(result);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable int id) {
         ServiceResultVoid result = studentService.delete(id);
