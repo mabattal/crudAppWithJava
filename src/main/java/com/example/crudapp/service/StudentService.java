@@ -192,8 +192,11 @@ public class StudentService {
     }
 
     public ServiceResult<List<StudentResponse>> getByAgeRange(int minAge, int maxAge) {
-        List<Student> students = studentRepository.findByAgeBetween(minAge, maxAge);
+        if(maxAge < minAge){
+            return ServiceResult.fail("minAge cannot be greater than maxAge.", HttpStatus.BAD_REQUEST);
+        }
 
+        List<Student> students = studentRepository.findByAgeBetween(minAge, maxAge);
         if (students.isEmpty()) {
             return ServiceResult.fail("No students found in this age range.", HttpStatus.NOT_FOUND);
         }
