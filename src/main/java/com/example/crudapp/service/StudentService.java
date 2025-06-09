@@ -364,8 +364,9 @@ public class StudentService {
         return ServiceResult.success(responses);
     }
 
-    public ServiceResult<List<StudentResponse>> getByEnrollmentDateBefore(LocalDate date) {
-        List<Student> students = studentRepository.findByEnrollmentDateBefore(date);
+    public ServiceResult<List<StudentResponse>> getByEnrollmentDateBefore(String date) {
+        LocalDate localDate = LocalDate.parse(date); // YYYY-MM-DD
+        List<Student> students = studentRepository.findByEnrollmentDateBefore(localDate);
 
         if (students.isEmpty()) {
             return ServiceResult.fail("No students found enrolled before the specified date.", HttpStatus.NOT_FOUND);
