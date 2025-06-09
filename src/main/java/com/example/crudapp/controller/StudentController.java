@@ -8,12 +8,9 @@ import com.example.crudapp.service.StudentService;
 import com.example.crudapp.service.common.ServiceResult;
 import com.example.crudapp.service.common.ServiceResultVoid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
