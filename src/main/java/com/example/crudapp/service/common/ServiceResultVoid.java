@@ -1,4 +1,4 @@
-package com.example.crudapp.service;
+package com.example.crudapp.service.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

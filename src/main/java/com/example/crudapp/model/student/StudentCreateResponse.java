@@ -1,4 +1,4 @@
-package com.example.crudapp.model;
+package com.example.crudapp.model.student;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudentCreateResponse {
-    private Integer Id;
+    private Long Id;
 }
