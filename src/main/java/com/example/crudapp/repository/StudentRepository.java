@@ -41,12 +41,12 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByDepartment_Name(String departmentName);
 
     //Tarih kontrolü
-    List<Student> fidByEnrollmentDateBefore(LocalDate date);
+    List<Student> findByEnrollmentDateBefore(LocalDate date);
 
     //Boolen kontrol
     boolean existsByEmail(String email);
 
     //Sayfalama ile
-    Page<Student> fidByIsActiveTrue(Pageable pageable);
+    Page<Student> findByIsActiveTrue(Pageable pageable);
 
 }
