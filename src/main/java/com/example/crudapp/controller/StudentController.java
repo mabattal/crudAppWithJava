@@ -55,64 +55,15 @@ public class StudentController {
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
-
-    @GetMapping("/by-email")
-    public ResponseEntity<ServiceResult<StudentResponse>> getByEmail(@RequestParam String email) {
-        ServiceResult<StudentResponse> result = studentService.getByEmail(email);
-        return ResponseEntity.status(result.getStatus()).body(result);
-    }
-
     @GetMapping("/active/by-name")
     public ResponseEntity<ServiceResult<List<StudentResponse>>> getByFullNameAndIsActive(@RequestParam String fullName) {
         ServiceResult<List<StudentResponse>> result = studentService.getByFullName(fullName);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 
-    @GetMapping("/age-range")
-    public ResponseEntity<ServiceResult<List<StudentResponse>>> getByAgeBetween(@RequestParam int min, @RequestParam int max) {
-        ServiceResult<List<StudentResponse>> result = studentService.getByAgeRange(min, max);
-        return ResponseEntity.status(result.getStatus()).body(result);
-    }
-
-    @GetMapping("/active/latest")
-    public ResponseEntity<ServiceResult<List<StudentResponse>>> getActiveOrderedByEnrollmentDateDesc() {
-        ServiceResult<List<StudentResponse>> result = studentService.getActiveStudentsOrderedByEnrollmentDate();
-        return ResponseEntity.status(result.getStatus()).body(result);
-    }
-
-    @GetMapping("/first-enrolled")
-    public ResponseEntity<ServiceResult<StudentResponse>> getFirstEnrolled() {
-        ServiceResult<StudentResponse> result = studentService.getFirstStudentByEnrollmentDate();
-        return ResponseEntity.status(result.getStatus()).body(result);
-    }
-
-    @GetMapping("/top3-age")
-    public ResponseEntity<ServiceResult<List<StudentResponse>>> getTop3OlderThan(@RequestParam int age) {
-        ServiceResult<List<StudentResponse>> result = studentService.getTop3StudentsByAge(age);
-        return ResponseEntity.status(result.getStatus()).body(result);
-    }
-
-    @GetMapping("/by-ages")
-    public ResponseEntity<ServiceResult<List<StudentResponse>>> getByAgeIn(@RequestParam List<Integer> ages) {
-        ServiceResult<List<StudentResponse>> result = studentService.getByAges(ages);
-        return ResponseEntity.status(result.getStatus()).body(result);
-    }
-
-    @GetMapping("/no-email")
-    public ResponseEntity<ServiceResult<List<StudentResponse>>> getWithNullEmail() {
-        ServiceResult<List<StudentResponse>> result = studentService.getStudentsWithNullEmail();
-        return ResponseEntity.status(result.getStatus()).body(result);
-    }
-
     @GetMapping("/by-department")
     public ResponseEntity<ServiceResult<List<StudentResponse>>> getByDepartmentName(@RequestParam String departmentName) {
         ServiceResult<List<StudentResponse>> result = studentService.getByDepartmentName(departmentName);
-        return ResponseEntity.status(result.getStatus()).body(result);
-    }
-
-    @GetMapping("/before-date")
-    public ResponseEntity<ServiceResult<List<StudentResponse>>> getEnrolledBefore(@RequestParam String date) {
-        ServiceResult<List<StudentResponse>> result = studentService.getByEnrollmentDateBefore(date);
         return ResponseEntity.status(result.getStatus()).body(result);
     }
 

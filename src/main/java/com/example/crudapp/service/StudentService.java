@@ -142,28 +142,29 @@ public class StudentService {
         return ServiceResultVoid.success(HttpStatus.NO_CONTENT);
     }
 
-    public ServiceResult<StudentResponse> getByEmail(String email) {
-        Optional<Student> optionalStudent = studentRepository.findByEmail(email);
+    public ServiceResult<List<StudentResponse>> getActiveStudentsWithPagination(int page, int size) {
+        Page<Student> studentPage = studentRepository.findByIsActiveTrue(Pageable.ofSize(size).withPage(page));
 
-        if (optionalStudent.isEmpty()) {
-            return ServiceResult.fail("Student not found with this email.", HttpStatus.NOT_FOUND);
+        if (studentPage.isEmpty()) {
+            return ServiceResult.fail("No active students found.", HttpStatus.NOT_FOUND);
         }
 
-        Student student = optionalStudent.get();
-        Department department = student.getDepartment();
-        DepartmentResponse departmentResponse = new DepartmentResponse(department.getId(), department.getName());
+        List<StudentResponse> responses = studentPage.stream().map(student -> {
+            Department department = student.getDepartment();
+            DepartmentResponse departmentResponse = new DepartmentResponse(department.getId(), department.getName());
 
-        StudentResponse response = new StudentResponse(
-                student.getId(),
-                student.getFullName(),
-                student.getEmail(),
-                student.getAge(),
-                student.getIsActive(),
-                student.getEnrollmentDate(),
-                departmentResponse
-        );
+            return new StudentResponse(
+                    student.getId(),
+                    student.getFullName(),
+                    student.getEmail(),
+                    student.getAge(),
+                    student.getIsActive(),
+                    student.getEnrollmentDate(),
+                    departmentResponse
+            );
+        }).toList();
 
-        return ServiceResult.success(response);
+        return ServiceResult.success(responses);
     }
 
     public ServiceResult<List<StudentResponse>> getByFullName(String fullName) {
@@ -189,6 +190,83 @@ public class StudentService {
         }).toList();
 
         return ServiceResult.success(responses);
+    }
+
+    public ServiceResult<List<StudentResponse>> getByDepartmentName(String departmentName) {
+        List<Student> students = studentRepository.findByDepartment_Name(departmentName);
+
+        if (students.isEmpty()) {
+            return ServiceResult.fail("No students found in this department.", HttpStatus.NOT_FOUND);
+        }
+
+        List<StudentResponse> responses = students.stream().map(student -> {
+            Department department = student.getDepartment();
+            DepartmentResponse departmentResponse = new DepartmentResponse(department.getId(), department.getName());
+
+            return new StudentResponse(
+                    student.getId(),
+                    student.getFullName(),
+                    student.getEmail(),
+                    student.getAge(),
+                    student.getIsActive(),
+                    student.getEnrollmentDate(),
+                    departmentResponse
+            );
+        }).toList();
+
+        return ServiceResult.success(responses);
+    }
+
+
+
+    public ServiceResult<List<StudentResponse>> getByEnrollmentDateBefore(String date) {
+        LocalDate localDate = LocalDate.parse(date); // YYYY-MM-DD
+        List<Student> students = studentRepository.findByEnrollmentDateBefore(localDate);
+
+        if (students.isEmpty()) {
+            return ServiceResult.fail("No students found enrolled before the specified date.", HttpStatus.NOT_FOUND);
+        }
+
+        List<StudentResponse> responses = students.stream().map(student -> {
+            Department department = student.getDepartment();
+            DepartmentResponse departmentResponse = new DepartmentResponse(department.getId(), department.getName());
+
+            return new StudentResponse(
+                    student.getId(),
+                    student.getFullName(),
+                    student.getEmail(),
+                    student.getAge(),
+                    student.getIsActive(),
+                    student.getEnrollmentDate(),
+                    departmentResponse
+            );
+        }).toList();
+
+        return ServiceResult.success(responses);
+    }
+
+    public ServiceResult<StudentResponse> getByEmail(String email) {
+        Optional<Student> optionalStudent = studentRepository.findByEmail(email);
+
+        if (optionalStudent.isEmpty()) {
+            return ServiceResult.fail("Student not found with this email.", HttpStatus.NOT_FOUND);
+        }
+
+        Student student = optionalStudent.get();
+        Department department = student.getDepartment();
+        DepartmentResponse departmentResponse = new DepartmentResponse(department.getId(), department.getName());
+
+        StudentResponse response = new StudentResponse(
+                student.getId(),
+                student.getFullName(),
+                student.getEmail(),
+                student.getAge(),
+                student.getIsActive(),
+                student.getEnrollmentDate(),
+                departmentResponse
+        );
+
+        return ServiceResult.success(response);
     }
 
     public ServiceResult<List<StudentResponse>> getByAgeRange(int minAge, int maxAge) {
@@ -325,82 +403,6 @@ public class StudentService {
         }
 
         List<StudentResponse> responses = students.stream().map(student -> {
-            Department department = student.getDepartment();
-            DepartmentResponse departmentResponse = new DepartmentResponse(department.getId(), department.getName());
-
-            return new StudentResponse(
-                    student.getId(),
-                    student.getFullName(),
-                    student.getEmail(),
-                    student.getAge(),
-                    student.getIsActive(),
-                    student.getEnrollmentDate(),
-                    departmentResponse
-            );
-        }).toList();
-
-        return ServiceResult.success(responses);
-    }
-
-    public ServiceResult<List<StudentResponse>> getByDepartmentName(String departmentName) {
-        List<Student> students = studentRepository.findByDepartment_Name(departmentName);
-
-        if (students.isEmpty()) {
-            return ServiceResult.fail("No students found in this department.", HttpStatus.NOT_FOUND);
-        }
-
-        List<StudentResponse> responses = students.stream().map(student -> {
-            Department department = student.getDepartment();
-            DepartmentResponse departmentResponse = new DepartmentResponse(department.getId(), department.getName());
-
-            return new StudentResponse(
-                    student.getId(),
-                    student.getFullName(),
-                    student.getEmail(),
-                    student.getAge(),
-                    student.getIsActive(),
-                    student.getEnrollmentDate(),
-                    departmentResponse
-            );
-        }).toList();
-
-        return ServiceResult.success(responses);
-    }
-
-    public ServiceResult<List<StudentResponse>> getByEnrollmentDateBefore(String date) {
-        LocalDate localDate = LocalDate.parse(date); // YYYY-MM-DD
-        List<Student> students = studentRepository.findByEnrollmentDateBefore(localDate);
-
-        if (students.isEmpty()) {
-            return ServiceResult.fail("No students found enrolled before the specified date.", HttpStatus.NOT_FOUND);
-        }
-
-        List<StudentResponse> responses = students.stream().map(student -> {
-            Department department = student.getDepartment();
-            DepartmentResponse departmentResponse = new DepartmentResponse(department.getId(), department.getName());
-
-            return new StudentResponse(
-                    student.getId(),
-                    student.getFullName(),
-                    student.getEmail(),
-                    student.getAge(),
-                    student.getIsActive(),
-                    student.getEnrollmentDate(),
-                    departmentResponse
-            );
-        }).toList();
-
-        return ServiceResult.success(responses);
-    }
-
-    public ServiceResult<List<StudentResponse>> getActiveStudentsWithPagination(int page, int size) {
-        Page<Student> studentPage = studentRepository.findByIsActiveTrue(Pageable.ofSize(size).withPage(page));
-
-        if (studentPage.isEmpty()) {
-            return ServiceResult.fail("No active students found.", HttpStatus.NOT_FOUND);
-        }
-
-        List<StudentResponse> responses = studentPage.stream().map(student -> {
             Department department = student.getDepartment();
             DepartmentResponse departmentResponse = new DepartmentResponse(department.getId(), department.getName());
 
