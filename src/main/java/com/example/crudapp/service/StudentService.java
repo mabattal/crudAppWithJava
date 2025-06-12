@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -53,6 +55,47 @@ public class StudentService {
         Student saved = studentRepository.save(student);
 
         return ServiceResult.success(new StudentCreateResponse(saved.getId()), HttpStatus.CREATED);
+    }
+
+    public ServiceResultVoid update(Long id, StudentUpdateRequest request) {
+        Optional<Student> optionalStudent = studentRepository.findById(id);
+
+        if (optionalStudent.isEmpty()) {
+            return ServiceResultVoid.fail("Student not found for updating.", HttpStatus.NOT_FOUND);
+        }
+
+        if (request.getEmail() != null && studentRepository.existsByEmail(request.getEmail())) {
+            return ServiceResultVoid.fail("This email address already exists.", HttpStatus.CONFLICT);
+        }
+
+        ServiceResult<DepartmentResponse> departmentResult = departmentService.getById(request.getDepartmentId());
+        if (departmentResult.isFail()) {
+            return ServiceResultVoid.fail("Please enter a valid department ID.", HttpStatus.NOT_FOUND);
+        }
+
+        Department department = new Department();
+        department.setId(request.getDepartmentId());
+        department.setName(departmentResult.getData().getName());
+
+        Student student = optionalStudent.get();
+        student.setFullName(request.getFullName());
+        student.setEmail(request.getEmail());
+        student.setAge(request.getAge());
+        student.setIsActive(request.getIsActive());
+        student.setEnrollmentDate(request.getEnrollmentDate());
+        student.setDepartment(department);
+
+        studentRepository.save(student);
+        return ServiceResultVoid.success(HttpStatus.NO_CONTENT);
+    }
+
+    public ServiceResultVoid delete(Long id) {
+        if (!studentRepository.existsById(id)) {
+            return ServiceResultVoid.fail("No students found to be deleted.", HttpStatus.NOT_FOUND);
+        }
+
+        studentRepository.deleteById(id);
+        return ServiceResultVoid.success(HttpStatus.NO_CONTENT);
     }
 
     public ServiceResult<StudentResponse> getById(Long id) {
@@ -99,47 +142,6 @@ public class StudentService {
                 .toList();
 
         return ServiceResult.success(responses);
-    }
-
-    public ServiceResultVoid update(Long id, StudentUpdateRequest request) {
-        Optional<Student> optionalStudent = studentRepository.findById(id);
-
-        if (optionalStudent.isEmpty()) {
-            return ServiceResultVoid.fail("Student not found for updating.", HttpStatus.NOT_FOUND);
-        }
-
-        if (request.getEmail() != null && studentRepository.existsByEmail(request.getEmail())) {
-            return ServiceResultVoid.fail("This email address already exists.", HttpStatus.CONFLICT);
-        }
-
-        ServiceResult<DepartmentResponse> departmentResult = departmentService.getById(request.getDepartmentId());
-        if (departmentResult.isFail()) {
-            return ServiceResultVoid.fail("Please enter a valid department ID.", HttpStatus.NOT_FOUND);
-        }
-
-        Department department = new Department();
-        department.setId(request.getDepartmentId());
-        department.setName(departmentResult.getData().getName());
-
-        Student student = optionalStudent.get();
-        student.setFullName(request.getFullName());
-        student.setEmail(request.getEmail());
-        student.setAge(request.getAge());
-        student.setIsActive(request.getIsActive());
-        student.setEnrollmentDate(request.getEnrollmentDate());
-        student.setDepartment(department);
-
-        studentRepository.save(student);
-        return ServiceResultVoid.success(HttpStatus.NO_CONTENT);
-    }
-
-    public ServiceResultVoid delete(Long id) {
-        if (!studentRepository.existsById(id)) {
-            return ServiceResultVoid.fail("No students found to be deleted.", HttpStatus.NOT_FOUND);
-        }
-
-        studentRepository.deleteById(id);
-        return ServiceResultVoid.success(HttpStatus.NO_CONTENT);
     }
 
     public ServiceResult<List<StudentResponse>> getActiveStudentsWithPagination(int page, int size) {
